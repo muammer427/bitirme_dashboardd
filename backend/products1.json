@@ -1,0 +1,58 @@
+{
+  "items": [
+    {
+      "barcode": "9",
+      "salePrice": 0.0,
+      "listPrice": 0.0,
+      "quantity": 0
+    },
+    {
+      "barcode": "5",
+      "salePrice": 5.0,
+      "listPrice": 7.0,
+      "quantity": 3
+    },
+    {
+      "barcode": "9",
+      "salePrice": 9.0,
+      "listPrice": 9.0,
+      "quantity": 9
+    },
+    {
+      "barcode": "5",
+      "salePrice": 0.0,
+      "listPrice": 0.0,
+      "quantity": 0
+    },
+    {
+      "barcode": "4",
+      "salePrice": 0.0,
+      "listPrice": 0.0,
+      "quantity": 0
+    },
+    {
+      "barcode": "1",
+      "salePrice": 0.0,
+      "listPrice": 5.0,
+      "quantity": 0
+    },
+    {
+      "barcode": "5",
+      "salePrice": 55.0,
+      "listPrice": 5.0,
+      "quantity": 5
+    },
+    {
+      "barcode": "98",
+      "salePrice": 3.0,
+      "listPrice": 6.0,
+      "quantity": 66
+    },
+    {
+      "barcode": "54",
+      "salePrice": 5.0,
+      "listPrice": 55.0,
+      "quantity": 5
+    }
+  ]
+}
