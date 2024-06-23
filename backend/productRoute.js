@@ -2,10 +2,55 @@ const express = require('express');
 const pool = require('./db');
 const axios = require('axios'); // Import axios
 const fs = require('fs'); // Import fs for file operations
+<<<<<<< HEAD
+const path = require('path');
+const multer = require('multer');
+const { exec } = require('child_process');
+const router = express.Router();
+
+// Ensure uploads directory exists
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir);
+}
+
+// Configure multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${Date.now()}-${file.originalname}`);
+  }
+});
+
+const upload = multer({ storage });
+
+// Define fixed columns for the product table
+const columns = [
+  { field: "id", type: "SERIAL PRIMARY KEY" },
+  { field: "img", type: "TEXT" },
+  { field: "barcode", type: "VARCHAR(150)" },
+  { field: "title", type: "VARCHAR(250)" },
+  { field: "description", type: "TEXT" },
+  { field: "productcode", type: "VARCHAR(255)" },
+  { field: "brand", type: "VARCHAR(255)" },
+  { field: "category", type: "VARCHAR(255)" },
+  { field: "stock", type: "INTEGER" },
+  { field: "desi", type: "VARCHAR(255)" },
+  { field: "currency", type: "VARCHAR(255)" },
+  { field: "listprice", type: "VARCHAR(255)" },
+  { field: "saleprice", type: "VARCHAR(255)" },
+  { field: "cargo", type: "VARCHAR(255)" },
+  { field: "vatrate", type: "VARCHAR(255)" }
+];
+
+=======
 const router = express.Router();
 const { PythonShell } = require('python-shell');
 const { exec } = require('child_process');
 // Create product table if it doesn't exist
+>>>>>>> 2a009ac31a51098a953caa3f06a6dec08611a60b
 const createTableQuery = `
   CREATE TABLE IF NOT EXISTS product (
     id SERIAL PRIMARY KEY,
@@ -36,9 +81,15 @@ pool.query(createTableQuery, (err, res) => {
 });
 
 // Insert data into table
-router.post('/add-product', async (req, res) => {
+router.post('/add-product', upload.single('image'), async (req, res) => {
   const data = req.body;
+  const file = req.file;
   console.log('Received data to insert:', data);
+  console.log('Received file:', file);
+
+  if (file) {
+    data.img = file.filename; // Store only the filename in the database
+  }
 
   const fields = Object.keys(data).join(', ');
   const values = Object.values(data);
@@ -50,6 +101,31 @@ router.post('/add-product', async (req, res) => {
     const result = await pool.query(query, values);
     console.log('Data inserted:', result.rows[0]);
     res.status(200).send(result.rows[0]);
+
+    exec('python3 1.py', (error, stdout, stderr) => {
+      if (error) {
+          console.error(`Error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.error(`Stderr: ${stderr}`);
+          return;
+      }
+      console.log(`Output: ${stdout}`);
+    });
+
+    exec('python3 2.py', (error, stdout, stderr) => {
+      if (error) {
+          console.error(`Error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.error(`Stderr: ${stderr}`);
+          return;
+      }
+      console.log(`Output: ${stdout}`);
+    });
+
   } catch (err) {
     console.error('Error inserting data:', err.message);
     res.status(500).send(err.message);
@@ -172,50 +248,7 @@ router.put('/update-product/:id', async (req, res) => {
     console.error('Error updating data:', err.message);
     res.status(500).send(err.message);
   }
-  exec('python3 1.py', (error, stdout, stderr) => {
-    if (error) {
-        console.error(`Error: ${error.message}`);
-        return;
-    }
-    if (stderr) {
-        console.error(`Stderr: ${stderr}`);
-        return;
-    }
-    console.log(`Output: ${stdout}`);
-});
-exec('python3 3.py', (error, stdout, stderr) => {
-  if (error) {
-      console.error(`Error: ${error.message}`);
-      return;
-  }
-  if (stderr) {
-      console.error(`Stderr: ${stderr}`);
-      return;
-  }
-  console.log(`Output: ${stdout}`);
-});
-exec('python3 4.py', (error, stdout, stderr) => {
-  if (error) {
-      console.error(`Error: ${error.message}`);
-      return;
-  }
-  if (stderr) {
-      console.error(`Stderr: ${stderr}`);
-      return;
-  }
-  console.log(`Output: ${stdout}`);
-});
-exec('python3 5.py', (error, stdout, stderr) => {
-  if (error) {
-      console.error(`Error: ${error.message}`);
-      return;
-  }
-  if (stderr) {
-      console.error(`Stderr: ${stderr}`);
-      return;
-  }
-  console.log(`Output: ${stdout}`);
-});
+  
 });
 
 router.get('/products/:id/barcode', async (req, res) => {
@@ -237,6 +270,147 @@ router.get('/products/:id/barcode', async (req, res) => {
     res.status(500).send(err.message);
   }
   
+});
+
+// Delete a product by ID
+router.delete('/products/:id', async (req, res) => {
+  const { id } = req.params;
+  console.log(`Received request to delete product with ID ${id}`);
+
+  const query = 'DELETE FROM product WHERE id = $1 RETURNING *';
+
+  try {
+    const result = await pool.query(query, [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).send('Product not found');
+    }
+    console.log('Product deleted:', result.rows[0]);
+
+    // Save the ID to a file
+    fs.writeFile('deleted_product_id.txt', id, (err) => {
+      if (err) {
+        console.error('Error writing ID to file:', err.message);
+      } else {
+        console.log('ID written to file');
+
+        // Python scripti çalıştır
+        exec('python3 deneme.py', (error, stdout, stderr) => {
+          if (error) {
+              console.error(`Error: ${error.message}`);
+              return;
+          }
+          if (stderr) {
+              console.error(`Stderr: ${stderr}`);
+              return;
+          }
+          console.log(`Output: ${stdout}`);
+        });
+      }
+    });
+  } catch (err) {
+    console.error('Error deleting product:', err.message);
+    res.status(500).send(err.message);
+  }
+});
+
+// Update a product by ID
+router.put('/update-product/:id', async (req, res) => {
+  const { id } = req.params;
+  const data = req.body;
+  console.log('Received data to update:', data);
+
+  const fields = Object.keys(data).map((key, index) => `${key} = $${index + 1}`).join(', ');
+  const values = Object.values(data);
+
+  const query = `UPDATE product SET ${fields} WHERE id = $${values.length + 1} RETURNING *`;
+
+  try {
+    const result = await pool.query(query, [...values, id]);
+    console.log('Data updated:', result.rows[0]);
+    res.status(200).send(result.rows[0]);
+
+    exec('python3 1.py', (error, stdout, stderr) => {
+      if (error) {
+          console.error(`Error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.error(`Stderr: ${stderr}`);
+          return;
+      }
+      console.log(`Output: ${stdout}`);
+    });
+
+    exec('python3 3.py', (error, stdout, stderr) => {
+      if (error) {
+          console.error(`Error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.error(`Stderr: ${stderr}`);
+          return;
+      }
+      console.log(`Output: ${stdout}`);
+    });
+
+    exec('python3 4.py', (error, stdout, stderr) => {
+      if (error) {
+          console.error(`Error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.error(`Stderr: ${stderr}`);
+          return;
+      }
+      console.log(`Output: ${stdout}`);
+    });
+
+    exec('python3 5.py', (error, stdout, stderr) => {
+      if (error) {
+          console.error(`Error: ${error.message}`);
+          return;
+      }
+      if (stderr) {
+          console.error(`Stderr: ${stderr}`);
+          return;
+      }
+      console.log(`Output: ${stdout}`);
+    });
+
+  } catch (err) {
+    console.error('Error updating data:', err.message);
+    res.status(500).send(err.message);
+  }
+});
+
+router.get('/products/:id/barcode', async (req, res) => {
+  const { id } = req.params;
+  console.log(`Received request to fetch barcode for product with ID ${id}`);
+
+  const query = 'SELECT barcode FROM product WHERE id = $1';
+
+  try {
+    const result = await pool.query(query, [id]);
+    if (result.rowCount === 0) {
+      return res.status(404).send('Product not found');
+    }
+    const barcode = result.rows[0].barcode;
+    console.log('Fetched barcode:', barcode);
+    res.status(200).json({ barcode });
+  } catch (err) {
+    console.error('Error fetching barcode:', err.message);
+    res.status(500).send(err.message);
+  }
+});
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+app.use(express.json());
+app.use('/', router);
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
 
 module.exports = router;

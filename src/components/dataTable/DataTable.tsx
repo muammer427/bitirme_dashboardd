@@ -1,7 +1,19 @@
 import React from "react";
+<<<<<<< HEAD
+import {
+  DataGrid,
+  GridColDef,
+  GridRowModel,
+  GridToolbar,
+} from "@mui/x-data-grid";
+import axios from "axios";
+import "./dataTable.scss";
+import { Link } from "react-router-dom";
+=======
 import { GridColDef, GridToolbar, DataGrid, GridRowModel } from "@mui/x-data-grid";
 import axios from "axios";
 import "./dataTable.scss";
+>>>>>>> 2a009ac31a51098a953caa3f06a6dec08611a60b
 
 type Props = {
   columns: GridColDef[];
@@ -12,7 +24,11 @@ type Props = {
   setOpenEdit: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+<<<<<<< HEAD
+const DataTable: React.FC<Props> = ({ columns, rows, slug, refreshData, setEditData, setOpenEdit }) => {
+=======
 const DataTable: React.FC<Props> = ({ columns, rows, refreshData, setEditData, setOpenEdit }) => {
+>>>>>>> 2a009ac31a51098a953caa3f06a6dec08611a60b
   const handleDelete = async (id: number) => {
     try {
       await axios.delete(`http://localhost:5000/products/${id}`);
@@ -42,9 +58,17 @@ const DataTable: React.FC<Props> = ({ columns, rows, refreshData, setEditData, s
     renderCell: (params) => {
       return (
         <div className="action">
+<<<<<<< HEAD
+          <Link to={`/${slug}/${params.row.id}`}>
+            <img src="/view.svg" alt="View" />
+          </Link>
+          <div className="edit" onClick={() => { setEditData(params.row); setOpenEdit(true); }}>
+            <img src="/edit.svg" alt="Edit" />
+=======
           
           <div className="edit" onClick={() => { setEditData(params.row); setOpenEdit(true); }}>
           <img src="/view.svg" alt="View" />
+>>>>>>> 2a009ac31a51098a953caa3f06a6dec08611a60b
           </div>
           <div className="delete" onClick={() => handleDelete(params.row.id)}>
             <img src="/delete.svg" alt="Delete" />

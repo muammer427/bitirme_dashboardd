@@ -7,7 +7,6 @@ import Footer from "./components/footer/Footer";
 import Menu from "./components/menu/Menu";
 import "./styles/global.scss";
 import User from "./pages/magaza/magaza";
-import Product from "./pages/product/Product";
 import Notes from "./pages/notlar/notlar"
 import {
   QueryClient,
@@ -57,10 +56,6 @@ function App() {
         {
           path: "/users/:id",
           element: <User />,
-        },
-        {
-          path: "/products/:id",
-          element: <Product />,
         },
         {
           path: "/notes",

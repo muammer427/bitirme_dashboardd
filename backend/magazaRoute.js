@@ -3,7 +3,6 @@ const pool = require('./db'); // Adjust path as necessary
 
 const router = express.Router();
 
-// Define columns for the "magazalar" table
 const columns = [
   { field: "id", type: "SERIAL PRIMARY KEY" },
   { field: "MagazaIsim", type: "VARCHAR(250)" },
@@ -59,11 +58,11 @@ router.get('/magazalar', async (req, res) => {
   }
 });
 
-router.get('/magazalar/count', async (req, res) => { 
+router.get('/count', async (req, res) => { 
   try {
     const result = await pool.query('SELECT COUNT(*) FROM magazalar');
     const count = result.rows[0].count;
-    res.json({ count });
+    res.json({ store_count: count }); // Correct the response structure to match your frontend expectations
   } catch (err) {
     console.error('Error fetching magazalar count:', err.message);
     res.status(500).send(err.message);

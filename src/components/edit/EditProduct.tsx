@@ -13,7 +13,10 @@ type Props = {
 
 const Edit: React.FC<Props> = ({ slug, columns, setOpen, editData, refreshData }) => {
   const [formData, setFormData] = useState<{ [key: string]: any }>({});
+<<<<<<< HEAD
   const [notification, setNotification] = useState<string | null>(null);
+=======
+>>>>>>> 2a009ac31a51098a953caa3f06a6dec08611a60b
 
   useEffect(() => {
     setFormData(editData);
@@ -34,6 +37,7 @@ const Edit: React.FC<Props> = ({ slug, columns, setOpen, editData, refreshData }
       const updateProductResponse = await axios.put(`http://localhost:5000/update-product/${formData.id}`, formData);
       console.log("Data updated successfully:", updateProductResponse.data);
 
+<<<<<<< HEAD
       // Show notification
       setNotification("Ürün başarıyla güncellendi");
 
@@ -42,6 +46,10 @@ const Edit: React.FC<Props> = ({ slug, columns, setOpen, editData, refreshData }
         setOpen(false);
         setNotification(null); // Clear notification after modal is closed
       }, 2000);
+=======
+      // Close the modal
+      setOpen(false);
+>>>>>>> 2a009ac31a51098a953caa3f06a6dec08611a60b
 
       // Refresh the product list
       refreshData();
@@ -74,7 +82,10 @@ const Edit: React.FC<Props> = ({ slug, columns, setOpen, editData, refreshData }
             ))}
           <button type="submit">Güncelle</button>
         </form>
+<<<<<<< HEAD
         {notification && <div className="notification">{notification}</div>}
+=======
+>>>>>>> 2a009ac31a51098a953caa3f06a6dec08611a60b
       </div>
     </div>
   );

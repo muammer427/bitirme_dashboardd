@@ -12,10 +12,10 @@ const Home = () => {
     const fetchData = async () => {
       try {
         const storeResponse = await axios.get("http://localhost:5000/magazalar/count");
-        setStoreCount(storeResponse.data.count);
+        setStoreCount(storeResponse.data.store_count); 
 
-        const productResponse = await axios.get("http://localhost:5000/products/count");
-        setProductCount(productResponse.data.count);
+        const productResponse = await axios.get("http://localhost:5000/products/product-count");
+        setProductCount(productResponse.data.product_count);
       } catch (error) {
         console.error("Error fetching data", error);
       }
@@ -30,7 +30,7 @@ const Home = () => {
     title: "Bağlı Mağazalar",
     dataKey: "storeCount",
     number: storeCount,
-    route: "/magazalar", 
+    route: "/magazalar",
   };
 
   const chartBoxProduct = {
@@ -39,7 +39,7 @@ const Home = () => {
     title: "Toplam Ürün sayısı",
     dataKey: "productCount",
     number: productCount,
-    route: "/products", 
+    route: "/products",
   };
 
   return (
@@ -53,7 +53,6 @@ const Home = () => {
       <div className="box box3">
         <ChartBox {...chartBoxProduct} />
       </div>
-    
     </div>
   );
 };

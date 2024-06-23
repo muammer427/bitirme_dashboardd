@@ -41,7 +41,7 @@ const Magazalar = () => {
   useEffect(() => {
     const fetchMagazalar = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/magazalar');
+        const response = await axios.get('http://localhost:5000/magazalar/magazalar');
         console.log('Magazalar fetched:', response.data);
         setMagazalar(response.data);
       } catch (error) {
